@@ -1,0 +1,78 @@
+﻿@page "/login"
+@layout UserLayout
+@inject IToastService ToastService
+@inject IUserProxy UserProxy
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<EditForm Model="LoginDtoRequest" OnValidSubmit="ValidLogin">
+    <div class="row text-center mb-5">
+        <ValidationSummary />
+        <h3>Iniciar Sesion</h3>
+    </div>
+    <div class="row">
+        <div class="mb-3">
+            <label for="Usuario" class="form-label">Usuario</label>
+            <input type="text" id="Usuario" class="form-control" autocomplete="username" @bind-value="LoginDtoRequest.Usuario"/>
+            <ValidationMessage For="() => LoginDtoRequest.Usuario" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="mb-3">
+            <label for="password" class="form-label">Clave</label>
+            <input type="password" id="password" class="form-control" autocomplete="password" @bind-value="LoginDtoRequest.Password"/>
+            <ValidationMessage For="() => LoginDtoRequest.Password" />
+        </div>
+        <div class="row justify-content-between">
+            <div class="col-auto">
+                <NavLink href="recover" class="link-danger">Olvidé mi clave</NavLink>
+            </div>
+            <div class="col-auto">
+                <NavLink href="register" class="link-dark">Registrarme</NavLink>
+            </div>
+        </div>
+        <div class="row justify-content-center mt-4">
+            <button type="submit" class="w-25 btn btn-lg btn-primary">Ingresar</button>
+        </div>
+    </div>
+    
+</EditForm>
+
+<LoadingComponent IsLoading="IsLoading" />
+
+@code {
+
+    public LoginDtoRequest LoginDtoRequest { get; set; } = new();
+
+    public bool IsLoading { get; set; }
+
+    private async Task ValidLogin()
+    {
+        try
+        {
+            IsLoading = true;
+
+            var response = await UserProxy.Login(LoginDtoRequest);
+            if (response.Success)
+            {
+                var auth = (AuthenticacionService)AuthenticationStateProvider;
+                await auth.Autenticar(response);
+
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                ToastService.ShowWarning(response.ErrorMessage!);
+            }
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+}

@@ -38,8 +38,8 @@ builder.Services.AddIdentity<GalaxyIdentityUser, IdentityRole>(policies =>
         policies.User.RequireUniqueEmail = true;
 
         // Politica de bloqueo de cuentas
-        policies.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromHours(1);
-        policies.Lockout.MaxFailedAccessAttempts = 5;
+        policies.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        policies.Lockout.MaxFailedAccessAttempts = 3;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();

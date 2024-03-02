@@ -1,0 +1,55 @@
+﻿@inject SweetAlertService Swal
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<header>
+    <nav class="navbar navbar-expand-lg bg-primary mb-3">
+        <div class="container-fluid">
+            <NavLink class="navbar-brand text-white" href="">APPGALAXY</NavLink>
+        </div>
+        <div class="d-sm-inline-flex justify-content-between">
+            <ul class="navbar-nav d-flex">
+                <AuthorizeView>
+                    <Authorized>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-white" href="">Hola @context.User.Identity!.Name</NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <button class="btn btn-outline-primary text-dark" @onclick="CerrarSesion">Cerrar Sesion</button>
+                        </li>
+                    </Authorized>
+                    <NotAuthorized>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-white" href="login">Iniciar Sesion</NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-white" href="register">Registrarse</NavLink>
+                        </li>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+@code {
+
+    private async Task CerrarSesion()
+    {
+        var result = await Swal.FireAsync(new SweetAlertOptions
+        {
+            Title = "¿Desea salir?",
+            Icon = SweetAlertIcon.Question,
+            ShowCancelButton = true,
+            ConfirmButtonText = "Sí"
+        });
+
+        if (result.IsConfirmed)
+        {
+            var auth = (AuthenticacionService)AuthenticationStateProvider;
+            await auth.Autenticar(null);
+            NavigationManager.NavigateTo("/", forceLoad: true);
+        }
+    }
+
+}

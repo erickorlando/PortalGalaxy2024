@@ -45,10 +45,19 @@ public class UserService : IUserService
             if (identity is null)
                 throw new SecurityException("Usuario no existe");
 
+            if (await _userManager.IsLockedOutAsync(identity))
+            {
+                throw new SecurityException($"Demasiados intentos fallidos para el usuario {request.Usuario}");
+            }
+
             // Validamos el usuario y clave.
             if (!await _userManager.CheckPasswordAsync(identity, request.Password))
             {
-                throw new SecurityException("Usuario o clave incorrecta");
+                response.ErrorMessage = "Clave incorrecta";
+                _logger.LogWarning($"Intento fallido de Login para el usuario {identity.UserName}");
+                await _userManager.AccessFailedAsync(identity);
+
+                return response;
             }
 
             var roles = await _userManager.GetRolesAsync(identity);
