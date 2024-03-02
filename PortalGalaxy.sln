@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortalGalaxy.DataAccess", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortalGalaxy.Repositories", "PortalGalaxy.Repositories\PortalGalaxy.Repositories.csproj", "{D28C9860-4AF4-4FCE-8C7C-B9B3DB3DEAEC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortalGalaxy.Services", "PortalGalaxy.Services\PortalGalaxy.Services.csproj", "{6E85DA83-005D-4A4E-B5D4-6BA5173D01A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{D28C9860-4AF4-4FCE-8C7C-B9B3DB3DEAEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D28C9860-4AF4-4FCE-8C7C-B9B3DB3DEAEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D28C9860-4AF4-4FCE-8C7C-B9B3DB3DEAEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E85DA83-005D-4A4E-B5D4-6BA5173D01A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E85DA83-005D-4A4E-B5D4-6BA5173D01A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E85DA83-005D-4A4E-B5D4-6BA5173D01A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E85DA83-005D-4A4E-B5D4-6BA5173D01A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

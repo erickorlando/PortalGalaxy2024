@@ -9,6 +9,8 @@
   <ItemGroup>
     <ProjectReference Include="..\PortalGalaxy.DataAccess\PortalGalaxy.DataAccess.csproj" />
     <ProjectReference Include="..\PortalGalaxy.Entities\PortalGalaxy.Entities.csproj" />
+    <ProjectReference Include="..\PortalGalaxy.Repositories\PortalGalaxy.Repositories.csproj" />
+    <ProjectReference Include="..\PortalGalaxy\Shared\PortalGalaxy.Shared.csproj" />
   </ItemGroup>
 
 </Project>

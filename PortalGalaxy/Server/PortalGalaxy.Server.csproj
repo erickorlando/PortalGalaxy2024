@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.16" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.16" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.16">
@@ -14,10 +15,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.16" />
+    <PackageReference Include="Scrutor" Version="4.2.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\PortalGalaxy.DataAccess\PortalGalaxy.DataAccess.csproj" />
+    <ProjectReference Include="..\..\PortalGalaxy.Repositories\PortalGalaxy.Repositories.csproj" />
+    <ProjectReference Include="..\..\PortalGalaxy.Services\PortalGalaxy.Services.csproj" />
     <ProjectReference Include="..\Client\PortalGalaxy.Client.csproj" />
     <ProjectReference Include="..\Shared\PortalGalaxy.Shared.csproj" />
   </ItemGroup>
