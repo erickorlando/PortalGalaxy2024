@@ -24,4 +24,22 @@ public class UserProxy : RestBase, IUserProxy
         if (!response.Success)
             throw new ApplicationException(response.ErrorMessage);
     }
+
+    public async Task SendTokenToResetPassword(GenerateTokenToResetDtoRequest request)
+    {
+        var response =
+            await SendAsync<GenerateTokenToResetDtoRequest, BaseResponse>(request, HttpMethod.Post,
+                "SendTokenToResetPassword");
+        if (!response.Success)
+            throw new ApplicationException(response.ErrorMessage);
+    }
+
+    public async Task ResetPassword(ResetPasswordDtoRequest request)
+    {
+        var response =
+            await SendAsync<ResetPasswordDtoRequest, BaseResponse>(request, HttpMethod.Post,
+                "ResetPassword");
+        if (!response.Success)
+            throw new ApplicationException(response.ErrorMessage);
+    }
 }

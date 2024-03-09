@@ -36,4 +36,16 @@ public class UsersController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> SendTokenToResetPassword(GenerateTokenToResetDtoRequest request)
+    {
+        return Ok(await _service.SendTokenToResetPasswordAsync(request));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ResetPassword(ResetPasswordDtoRequest request)
+    {
+        return Ok(await _service.ResetPasswordAsync(request));
+    }
 }

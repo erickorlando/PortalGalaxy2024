@@ -7,8 +7,12 @@ using PortalGalaxy.Repositories.Interfaces;
 using Scrutor;
 using System.Text;
 using PortalGalaxy.Services.Interfaces;
+using PortalGalaxy.Shared.Configuracion;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Mapeamos el contenido del archivo de configuracion en una clase fuertemente tipada
+builder.Services.Configure<AppSettings>(builder.Configuration);
 
 // Add services to the container.
 
