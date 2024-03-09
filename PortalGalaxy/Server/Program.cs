@@ -62,6 +62,7 @@ builder.Services.Scan(selector => selector
 builder.Services.AddAutoMapper(conf =>
 {
     conf.AddProfile<CategoriaProfile>();
+    conf.AddProfile<TallerProfile>();
 });
 
 // Configuramos el contexto de seguridad del API

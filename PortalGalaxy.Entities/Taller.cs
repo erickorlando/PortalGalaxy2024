@@ -23,7 +23,7 @@ public partial class Taller : EntityBase
     [Column(TypeName = "datetime")]
     public DateTime HoraInicio { get; set; }
 
-    public int Situacion { get; set; }
+    public SituacionTaller Situacion { get; set; }
 
     [StringLength(100)]
     [Unicode(false)]

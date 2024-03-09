@@ -28,7 +28,7 @@ namespace PortalGalaxy.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(CategoriaDtoRequest request)
+        public async Task<IActionResult> Post([FromBody] CategoriaDtoRequest request)
         {
             return Ok(await _service.CreateAsync(request));
         }
