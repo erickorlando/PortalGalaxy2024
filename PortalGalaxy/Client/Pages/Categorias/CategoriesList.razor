@@ -1,0 +1,60 @@
+﻿@page "/categorias/list"
+@inject ICategoriaProxy CategoriaProxy
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Categorias</PageTitle>
+
+<ListaGenerica TItem="CategoriaDtoResponse" Lista="Categorias" Titulo="Lista de Categorias" BotonNuevo="CrearCategoria">
+    <Cabeceras>
+        <th class="table-primary text-center">Id</th>
+        <th class="table-primary text-center">Nombre</th>
+        <th class="table-primary text-center">Descripcion</th>
+        <th class="table-primary text-center">Acciones</th>
+    </Cabeceras>
+    <Detalles>
+        <td>@context.Id</td>
+        <td>@context.Nombre</td>
+        <td>@context.Descripcion</td>
+        <td><button type="button" class="btn btn-secondary" @onclick="() => Editar(context.Id)">Editar</button></td>
+    </Detalles>
+</ListaGenerica>
+
+<LoadingComponent IsLoading="IsLoading" />
+
+@code {
+
+    public ICollection<CategoriaDtoResponse>? Categorias { get; set; }
+
+    public bool IsLoading { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            IsLoading = true;
+
+            Categorias = await CategoriaProxy.ListAsync();
+
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private void CrearCategoria()
+    {
+        NavigationManager.NavigateTo("/categorias/nuevo");
+    }
+
+    private void Editar(int id)
+    {
+        NavigationManager.NavigateTo($"/categorias/editar/{id}");
+    }
+
+}

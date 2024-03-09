@@ -14,6 +14,7 @@ namespace PortalGalaxy.Entities
         protected EntityBase()
         {
             FechaCreacion = DateTime.Now;
+            Estado = true;
         }
     }
 }

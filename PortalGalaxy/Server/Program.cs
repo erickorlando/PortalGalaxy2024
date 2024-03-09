@@ -4,10 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PortalGalaxy.DataAccess;
 using PortalGalaxy.Repositories.Interfaces;
-using Scrutor;
-using System.Text;
 using PortalGalaxy.Services.Interfaces;
 using PortalGalaxy.Shared.Configuracion;
+using Scrutor;
+using System.Text;
+using PortalGalaxy.Services.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +59,11 @@ builder.Services.Scan(selector => selector
     .WithScopedLifetime()
 );
 
+builder.Services.AddAutoMapper(conf =>
+{
+    conf.AddProfile<CategoriaProfile>();
+});
+
 // Configuramos el contexto de seguridad del API
 builder.Services.AddAuthentication(x =>
 {
@@ -105,20 +111,6 @@ app.UseRouting();
 app.UseAuthentication();
 // Autorizacion
 app.UseAuthorization();
-
-app.MapGet("api/Categorias", async (ICategoriaRepository repository) =>
-{
-    var data = await repository.ListAsync();
-
-    return Results.Ok(data);
-});
-
-app.MapGet("api/Talleres", async (ITallerRepository repository) =>
-{
-    var data = await repository.ListAsync(p => p.Estado);
-
-    return Results.Ok(data);
-});
 
 app.MapRazorPages();
 app.MapControllers();

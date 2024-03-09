@@ -1,0 +1,41 @@
+﻿<EditForm Model="Request" OnValidSubmit="OnSave">
+    
+    <div class="row">
+        <div class="col-10 mb-3">
+            <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <InputText id="nombre" class="form-control" @bind-Value="Request.Nombre" />
+                <ValidationMessage For="() => Request.Nombre" />
+            </div>
+            <div class="form-group">
+                <label for="descripcion">Descripcion</label>
+                <InputText id="descripcion" class="form-control" @bind-Value="Request.Descripcion" />
+                <ValidationMessage For="() => Request.Descripcion" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-auto">
+            <NavLink class="btn btn-outline-primary" href="categorias/list">Cancelar</NavLink>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+    </div>
+
+</EditForm>
+
+
+@code {
+
+    [Parameter] 
+    public CategoriaDtoRequest Request { get; set; } = new();
+
+    [Parameter]
+    public EventCallback OnGrabar { get; set; }
+
+    private void OnSave()
+    {
+        OnGrabar.InvokeAsync();
+    }
+}
