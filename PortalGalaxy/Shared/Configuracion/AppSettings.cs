@@ -9,6 +9,8 @@ namespace PortalGalaxy.Shared.Configuracion
         public Jwt Jwt { get; set; }
 
         public SmtpConfiguration SmtpConfiguration { get; set; }
+
+        public StorageConfiguration StorageConfiguration { get; set; }
     }
 
     public class SmtpConfiguration
@@ -28,4 +30,9 @@ namespace PortalGalaxy.Shared.Configuracion
         public string Issuer { get; set; }
     }
 
+    public class StorageConfiguration
+    {
+        public string Path { get; set; }
+        public string PublicUrl { get; set; }
+    }
 }
