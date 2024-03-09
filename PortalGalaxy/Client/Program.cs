@@ -22,6 +22,7 @@ builder.Services.AddSweetAlert2();
 builder.Services.AddScoped<IUserProxy, UserProxy>();
 builder.Services.AddScoped<IJsonProxy, JsonProxy>();
 builder.Services.AddScoped<ICategoriaProxy, CategoriaProxy>();
+builder.Services.AddScoped<ITallerProxy, TallerProxy>();
 
 builder.Services.AddScoped<AuthenticationStateProvider, AuthenticacionService>();
 builder.Services.AddAuthorizationCore();
