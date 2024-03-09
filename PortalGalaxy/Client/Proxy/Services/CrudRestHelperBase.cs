@@ -13,6 +13,17 @@ where TResponse : class
     {
     }
 
+    public async Task<PaginationResponse<TResponse>> ListAsync(string? filter, int page = 1, int pageSize = 5)
+    {
+        var response = await HttpClient.GetFromJsonAsync<PaginationResponse<TResponse>>($"{BaseUrl}{filter}");
+        if (response!.Success)
+        {
+            return response;
+        }
+
+        throw new InvalidOperationException(response.ErrorMessage);
+    }
+
     public virtual async Task<ICollection<TResponse>> ListAsync()
     {
         var response = await HttpClient.GetFromJsonAsync<PaginationResponse<TResponse>>($"{BaseUrl}");

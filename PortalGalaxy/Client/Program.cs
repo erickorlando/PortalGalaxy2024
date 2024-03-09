@@ -23,6 +23,10 @@ builder.Services.AddScoped<IUserProxy, UserProxy>();
 builder.Services.AddScoped<IJsonProxy, JsonProxy>();
 builder.Services.AddScoped<ICategoriaProxy, CategoriaProxy>();
 builder.Services.AddScoped<ITallerProxy, TallerProxy>();
+builder.Services.AddScoped<IInstructorProxy, InstructorProxy>();
+builder.Services.AddScoped<IInscripcionProxy, InscripcionProxy>();
+builder.Services.AddScoped<IAlumnoProxy, AlumnoProxy>();
+builder.Services.AddScoped<IHomeProxy, HomeProxy>();
 
 builder.Services.AddScoped<AuthenticationStateProvider, AuthenticacionService>();
 builder.Services.AddAuthorizationCore();
