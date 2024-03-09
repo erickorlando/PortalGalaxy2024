@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace PortalGalaxy.Entities;
 
@@ -15,7 +12,7 @@ public partial class Inscripcion : EntityBase
 
     public int TallerId { get; set; }
 
-    public int Situacion { get; set; }
+    public SituacionInscripcion Situacion { get; set; }
 
     [ForeignKey("AlumnoId")]
     [InverseProperty("Inscripcions")]

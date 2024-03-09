@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.35" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PortalGalaxy.DataAccess\PortalGalaxy.DataAccess.csproj" />
     <ProjectReference Include="..\PortalGalaxy.Entities\PortalGalaxy.Entities.csproj" />
   </ItemGroup>
