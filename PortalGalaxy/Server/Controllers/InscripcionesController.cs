@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PortalGalaxy.Services.Interfaces;
 using PortalGalaxy.Shared;
@@ -37,7 +38,9 @@ namespace PortalGalaxy.Server.Controllers
         [Authorize]
         public async Task<IActionResult> Post([FromBody] InscripcionDtoRequest request)
         {
-            var response = await _service.AddAsync(User.Identity!.Name!, request);
+            var email = User.Claims.First(p => p.Type == ClaimTypes.Email).Value;
+
+            var response = await _service.AddAsync(email, request);
 
             return response.Success ? Ok(response) : BadRequest(response);
         }
