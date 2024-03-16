@@ -8,6 +8,7 @@ using PortalGalaxy.Services.Interfaces;
 using PortalGalaxy.Shared.Configuracion;
 using Scrutor;
 using System.Text;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using PortalGalaxy.Services.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -66,6 +67,9 @@ builder.Services.AddAutoMapper(conf =>
 {
     conf.AddProfile<CategoriaProfile>();
     conf.AddProfile<TallerProfile>();
+    conf.AddProfile<InstructorProfile>();
+    conf.AddProfile<AlumnoProfile>();
+    conf.AddProfile<InscripcionProfile>();
 });
 
 // Configuramos el contexto de seguridad del API

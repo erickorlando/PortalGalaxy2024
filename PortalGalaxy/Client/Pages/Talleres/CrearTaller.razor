@@ -1,0 +1,47 @@
+﻿@page "/taller/nuevo"
+@inject ITallerProxy TallerProxy
+@inject ICategoriaProxy CategoriaProxy
+@inject IJsonProxy JsonProxy
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+@attribute [Authorize(Roles = Constantes.RolAdministrador)]
+
+<EditTallerComponent Categorias="Categorias" Situaciones="Situaciones" Titulo="Crear Taller" OnGuardar="OnGrabar" />
+
+<LoadingComponent IsLoading="IsLoading" />
+
+@code {
+    public ICollection<CategoriaDtoResponse> Categorias { get; set; } = new List<CategoriaDtoResponse>();
+
+    private ICollection<SituacionModel> Situaciones { get; set; } = new List<SituacionModel>();
+
+    public bool IsLoading { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categorias = await CategoriaProxy.ListAsync();
+        Situaciones = await JsonProxy.ListSituaciones();
+    }
+
+    private async Task OnGrabar(TallerDtoRequest request)
+    {
+        try
+        {
+            IsLoading = true;
+
+            await TallerProxy.CreateAsync<BaseResponse>(request);
+
+            ToastService.ShowInfo("Se guardo correctamente el taller");
+            NavigationManager.NavigateTo("taller/list");
+
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+}
