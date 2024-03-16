@@ -1,26 +1,49 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">PortalGalaxy</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+﻿@using PortalGalaxy.Shared
+<aside class="d-flex flex-column flex-shrink-0 p-1 bg-light border border-dark">
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+            <NavLink href="index" class="nav-link link-dark"><i class="bi bi-house me-1"></i>Inicio</NavLink>
+        </li>
+        <AuthorizeView Roles="@Constantes.RolAdministrador">
+            <Authorized>
+                <li class="nav-item">
+                    <NavLink href="categorias/list" class="nav-link link-dark"><i class="bi bi-archive me-1"></i>Categorias</NavLink>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle link-dark" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-tools me-1"></i>Talleres</a>
+                    <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
+                        <li>
+                            <NavLink href="taller/list" class="dropdown-item"><i class="bi bi-tools me-1"></i>Listado de Talleres</NavLink>
+                        </li>
+                        <li>
+                            <NavLink href="taller/inscritos/list" class="dropdown-item"><i class="bi bi-person me-1"></i>Inscritos por Taller</NavLink>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <NavLink href="inscripciones/list" class="nav-link link-dark"><i class="bi bi-people me-1"></i>Inscripciones</NavLink>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle link-dark" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-reception-4 me-1"></i>Reportes</a>
+                    <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+                        <li>
+                            <NavLink href="reportes/tallerpormes" class="nav-link link-dark"><i class="bi bi-bar-chart-steps me-1"></i>Talleres por mes</NavLink>
+                        </li>
+                        <li>
+                            <NavLink href="reportes/tallerporinstructor" class="nav-link link-dark"><i class="bi bi-graph-up-arrow me-1"></i>Talleres por instructor</NavLink>
+                        </li>
+                    </ul>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="categorias/list" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Categorias
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="taller/list" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Talleres
-            </NavLink>
-        </div>
-    </nav>
-</div>
+                </li>
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="@Constantes.RolAlumno">
+            <li class="nav-item">
+                <NavLink href="catalogotalleres" class="nav-link link-dark"><i class="bi bi-tools me-1"></i>Talleres</NavLink>
+            </li>
+        </AuthorizeView>
+    </ul>
+</aside>
 
 @code {
     private bool collapseNavMenu = true;

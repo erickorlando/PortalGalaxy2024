@@ -1,6 +1,7 @@
 ﻿@page "/categorias/list"
 @inject ICategoriaProxy CategoriaProxy
 @inject IToastService ToastService
+@inject SweetAlertService Swal
 @inject NavigationManager NavigationManager
 
 <PageTitle>Categorias</PageTitle>
@@ -16,7 +17,11 @@
         <td>@context.Id</td>
         <td>@context.Nombre</td>
         <td>@context.Descripcion</td>
-        <td><button type="button" class="btn btn-secondary" @onclick="() => Editar(context.Id)">Editar</button></td>
+        <td>
+            <BotonesAccion TItem="CategoriaDtoResponse" 
+                           Item="context"
+                           BotonEditar="Editar" BotonEliminar="Eliminar" />
+        </td>
     </Detalles>
 </ListaGenerica>
 
@@ -52,9 +57,24 @@
         NavigationManager.NavigateTo("/categorias/nuevo");
     }
 
-    private void Editar(int id)
+    private void Editar(CategoriaDtoResponse entidad)
     {
-        NavigationManager.NavigateTo($"/categorias/editar/{id}");
+        NavigationManager.NavigateTo($"/categorias/editar/{entidad.Id}");
     }
 
+    private async Task Eliminar(CategoriaDtoResponse entidad)
+    {
+        var result = await Swal.FireAsync(new SweetAlertOptions()
+        {
+            Title = "¿Desea eliminar este registro?",
+            Icon = SweetAlertIcon.Question,
+            ShowCancelButton = true
+        });
+
+        if (result.IsConfirmed)
+        {
+            await CategoriaProxy.DeleteAsync(entidad.Id);
+            await OnInitializedAsync();
+        }
+    }
 }

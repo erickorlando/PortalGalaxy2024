@@ -49,6 +49,9 @@ builder.Services.AddIdentity<GalaxyIdentityUser, IdentityRole>(policies =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
+    o.TokenLifespan = TimeSpan.FromHours(1));
+
 // Registramos las dependencias de Repositories
 builder.Services.Scan(selector => selector
     .FromAssemblies(typeof(ICategoriaRepository).Assembly,

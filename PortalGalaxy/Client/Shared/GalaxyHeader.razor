@@ -7,23 +7,23 @@
         <div class="container-fluid">
             <NavLink class="navbar-brand text-white" href="">APPGALAXY</NavLink>
         </div>
-        <div class="d-sm-inline-flex justify-content-between">
+        <div class="d-lg-inline-flex justify-content-between">
             <ul class="navbar-nav d-flex">
                 <AuthorizeView>
                     <Authorized>
                         <li class="nav-item">
-                            <NavLink class="nav-link text-white" href="">Hola @context.User.Identity!.Name</NavLink>
+                            <NavLink class="nav-link text-white" href=""><i class="bi bi-person-square me-1"></i>Hola @context.User.Identity!.Name</NavLink>
                         </li>
                         <li class="nav-item">
-                            <button class="btn btn-outline-primary text-dark" @onclick="CerrarSesion">Cerrar Sesion</button>
+                            <button class="btn btn-outline-primary text-dark" @onclick="CerrarSesion"><i class="bi bi-door-open-fill me-1"></i>Cerrar Sesion</button>
                         </li>
                     </Authorized>
                     <NotAuthorized>
                         <li class="nav-item">
-                            <NavLink class="nav-link text-white" href="login">Iniciar Sesion</NavLink>
+                            <NavLink class="nav-link text-white" href="login"><i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesion</NavLink>
                         </li>
                         <li class="nav-item">
-                            <NavLink class="nav-link text-white" href="register">Registrarse</NavLink>
+                            <NavLink class="nav-link text-white" href="register"><i class="bi bi-person-add me-1"></i>Registrarse</NavLink>
                         </li>
                     </NotAuthorized>
                 </AuthorizeView>
