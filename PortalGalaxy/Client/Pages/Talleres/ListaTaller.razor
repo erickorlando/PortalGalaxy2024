@@ -6,6 +6,7 @@
 @inject IToastService ToastService
 @inject NavigationManager NavigationManager
 @inject SweetAlertService Swal
+@inject IJSRuntime JsRuntime
 
 <h2 class="text-uppercase mb-5">Listado de Talleres</h2>
 
@@ -71,7 +72,10 @@
                             <th class="text-center">Instructor</th>
                             <th class="text-center">Fecha</th>
                             <th class="text-center">Situacion</th>
-                            <th class="text-center">Acción</th>
+                            @if (!ExportaPdf)
+                            {
+                                <th class="text-center">Acción</th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -84,27 +88,30 @@
                                 <td>@item.Instructor</td>
                                 <td class="text-center">@item.Fecha</td>
                                 <td class="text-center">@item.Situacion</td>
-                                <td class="text-center">
-                                    @switch (item.Situacion)
-                                    {
-                                        case "Por Aperturar":
-                                        case "Aperturada":
-                                            <i class="bi bi-check-circle-fill" style="color: green;"></i>
-                                            break;
-                                        case "Cancelada":
-                                            <i class="bi bi-dash-circle-fill" style="color: red;"></i>
-                                            break;
-                                        default:
-                                            <i class="bi bi-check2-circle"></i>
-                                            break;
-                                    }
-                                    <button type="button" class="btn" @onclick="() => OnEditar(item.Id)">
-                                        <i class="bi bi-pencil-fill"></i>
-                                    </button>
-                                    <button type="button" class="btn" @onclick="() => OnEliminar(item.Id)">
-                                        <i class="bi bi-trash-fill"></i>
-                                    </button>
-                                </td>
+                                @if (!ExportaPdf)
+                                {
+                                    <td class="text-center">
+                                        @switch (item.Situacion)
+                                        {
+                                            case "Por Aperturar":
+                                            case "Aperturada":
+                                                <i class="bi bi-check-circle-fill" style="color: green;"></i>
+                                                break;
+                                            case "Cancelada":
+                                                <i class="bi bi-dash-circle-fill" style="color: red;"></i>
+                                                break;
+                                            default:
+                                                <i class="bi bi-check2-circle"></i>
+                                                break;
+                                        }
+                                        <button type="button" class="btn" @onclick="() => OnEditar(item.Id)">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </button>
+                                        <button type="button" class="btn" @onclick="() => OnEliminar(item.Id)">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </td>
+                                }
                             </tr>
                         }
                     </tbody>
@@ -117,6 +124,14 @@
         }
     }
 
+</div>
+<div class="row justify-content-end">
+    <div class="col-auto">
+        <button class="btn btn-outline-danger" @onclick="OnExportarPdf"><i class="bi bi-filetype-pdf me-1"></i>Exportar</button>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-success"><i class="bi bi-file-excel me-1"></i>Exportar</button>
+    </div>
 </div>
 
 <DataPager @ref="Paginador" Result="PagedResult" OnPageChanged="PaginaCambiada" OnPageSizeChanged="FilasPorPagina"></DataPager>
@@ -138,6 +153,7 @@
 
     public PagedResult<TallerDtoResponse> PagedResult { get; set; } = default!;
 
+    public bool ExportaPdf { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -197,12 +213,12 @@
         try
         {
             var result = await Swal.FireAsync(new SweetAlertOptions
-            {
-                Text = "Desea eliminar el registro?",
-                Title = "Eliminar",
-                Icon = SweetAlertIcon.Question,
-                ShowCancelButton = true
-            });
+                {
+                    Text = "Desea eliminar el registro?",
+                    Title = "Eliminar",
+                    Icon = SweetAlertIcon.Question,
+                    ShowCancelButton = true
+                });
 
             if (result.IsConfirmed)
             {
@@ -233,4 +249,36 @@
         await OnSearch();
     }
 
+    private async Task OnExportarPdf()
+    {
+        if (Talleres is null) return;
+
+        try
+        {
+            // ExportaPdf = true;
+
+            // await using var module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/HtmlToPdf.js");
+
+            // var contenidoTabla = await JsRuntime.InvokeAsync<string>("getTableHtml");
+
+            // // Generar y descargar el pdf
+            // await module.InvokeVoidAsync("generateAndDownloadPdf", $"<h1>Listado de Talleres</h1><hr />{contenidoTabla}", "Talleres.pdf");
+
+            // ExportaPdf = false
+
+            var stream = await TallerProxy.ExportarPdf(BusquedaRequest);
+            await using (var memory = new MemoryStream())
+            {
+                await stream.CopyToAsync(memory);
+                var bytes = memory.ToArray();
+
+                await JsRuntime.InvokeVoidAsync("descargarArchivo", "talleres.pdf", bytes, "application/pdf");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError(ex.Message);
+        }
+    }
 }

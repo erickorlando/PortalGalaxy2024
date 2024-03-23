@@ -79,4 +79,14 @@ public class TallerProxy : CrudRestHelperBase<TallerDtoRequest, TallerDtoRespons
         
         return response!;
     }
+
+    public async Task<Stream> ExportarPdf(BusquedaTallerRequest request)
+    {
+        var response = await HttpClient.PostAsJsonAsync($"{BaseUrl}/pdf", request);
+        response.EnsureSuccessStatusCode();
+
+        var result = await response.Content.ReadAsStreamAsync();
+
+        return result;
+    }
 }

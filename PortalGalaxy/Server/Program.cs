@@ -12,6 +12,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
 using System.Text;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,8 @@ if (builder.Environment.IsDevelopment())
 
     builder.Logging.AddSerilog(loggerFile);
 }
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 // Mapeamos el contenido del archivo de configuracion en una clase fuertemente tipada
 builder.Services.Configure<AppSettings>(builder.Configuration);

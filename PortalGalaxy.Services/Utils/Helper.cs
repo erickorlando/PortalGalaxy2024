@@ -1,4 +1,7 @@
-﻿namespace PortalGalaxy.Services.Utils;
+﻿using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+
+namespace PortalGalaxy.Services.Utils;
 
 public static class Helper
 {
@@ -15,5 +18,10 @@ public static class Helper
         }
 
         return total;
+    }
+
+    public static void TextData(this TextSpanDescriptor text)
+    {
+        text.FontFamily("Arial").FontSize(8).FontColor(Colors.Black);
     }
 }

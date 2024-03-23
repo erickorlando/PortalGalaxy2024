@@ -14,4 +14,6 @@ public interface ITallerProxy : ICrudRestHelper<TallerDtoRequest, TallerDtoRespo
     Task<BaseResponseGeneric<ICollection<TalleresPorMesDto>>> ListarPorMesAsync(int anio);
     
     Task<BaseResponseGeneric<ICollection<TalleresPorInstructorDto>>> ListarPorInstructorAsync(int anio);
+
+    Task<Stream> ExportarPdf(BusquedaTallerRequest request);
 }
