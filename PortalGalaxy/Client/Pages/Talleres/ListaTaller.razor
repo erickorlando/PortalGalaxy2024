@@ -1,4 +1,5 @@
 ﻿@page "/taller/list"
+@using PortalGalaxy.Client.Xls
 
 @inject ITallerProxy TallerProxy
 @inject ICategoriaProxy CategoriaProxy
@@ -7,6 +8,7 @@
 @inject NavigationManager NavigationManager
 @inject SweetAlertService Swal
 @inject IJSRuntime JsRuntime
+@inject HttpClient HttpClient
 
 <h2 class="text-uppercase mb-5">Listado de Talleres</h2>
 
@@ -130,7 +132,7 @@
         <button class="btn btn-outline-danger" @onclick="OnExportarPdf"><i class="bi bi-filetype-pdf me-1"></i>Exportar</button>
     </div>
     <div class="col-auto">
-        <button class="btn btn-outline-success"><i class="bi bi-file-excel me-1"></i>Exportar</button>
+        <button class="btn btn-outline-success" @onclick="OnExportarExcel"><i class="bi bi-file-excel me-1"></i>Exportar</button>
     </div>
 </div>
 
@@ -255,6 +257,7 @@
 
         try
         {
+            IsLoading = true;
             // ExportaPdf = true;
 
             // await using var module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/HtmlToPdf.js");
@@ -279,6 +282,35 @@
         catch (Exception ex)
         {
             ToastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task OnExportarExcel()
+    {
+        if (Talleres is null) return;
+
+        try
+        {
+            IsLoading = true;
+            var plantilla = await HttpClient.GetStreamAsync("assets/xls/TallerTemplate.xlsx");
+
+            var excel = new PlantillaXls();
+            var bytes = excel.GenerarPlantilla(plantilla, Talleres);
+
+            await JsRuntime.InvokeVoidAsync("descargarArchivo", "talleres.xlsx", bytes, "application/octet-stream");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            ToastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 }

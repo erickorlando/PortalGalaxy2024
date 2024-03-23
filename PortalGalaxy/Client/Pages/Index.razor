@@ -1,5 +1,6 @@
 ﻿@page "/"
 @page "/index"
+@inject IJSRuntime JsRuntime
 
 <PageTitle>Portal Galaxy</PageTitle>
 
@@ -34,3 +35,12 @@
         </div>
     </div>
 </div>
+<button class="btn btn-outline-info mt-3" @onclick="BotonInformacion">Informacion</button>
+
+@code
+{
+    private async Task BotonInformacion()
+    {
+        await JsRuntime.InvokeVoidAsync("alert", "Hola alumno de Galaxy Training");
+    }
+}

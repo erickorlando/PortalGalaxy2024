@@ -1,8 +1,11 @@
 ﻿@page "/categorias/list"
+@using PortalGalaxy.Client.Xls
 @inject ICategoriaProxy CategoriaProxy
 @inject IToastService ToastService
 @inject SweetAlertService Swal
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+@inject HttpClient HttpClient
 
 <PageTitle>Categorias</PageTitle>
 
@@ -24,6 +27,12 @@
         </td>
     </Detalles>
 </ListaGenerica>
+
+<div class="row justify-content-end">
+    <div class="col-auto">
+        <button class="btn btn-outline-success" @onclick="OnExportarExcel"><i class="bi bi-file-excel me-1"></i>Exportar</button>
+    </div>
+</div>
 
 <LoadingComponent IsLoading="IsLoading" />
 
@@ -75,6 +84,31 @@
         {
             await CategoriaProxy.DeleteAsync(entidad.Id);
             await OnInitializedAsync();
+        }
+    }
+
+    private async Task OnExportarExcel()
+    {
+        if (Categorias is null) return;
+
+        try
+        {
+            IsLoading = true;
+            var plantilla = await HttpClient.GetStreamAsync("assets/xls/CategoriaTemplate.xlsx");
+
+            var excel = new PlantillaXls();
+            var bytes = excel.GenerarPlantilla(plantilla, Categorias, nameof(Categorias));
+
+            await JsRuntime.InvokeVoidAsync("descargarArchivo", "categorias.xlsx", bytes, "application/octet-stream");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            ToastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 }
