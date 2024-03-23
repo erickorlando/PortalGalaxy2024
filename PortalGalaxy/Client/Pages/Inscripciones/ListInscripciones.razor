@@ -1,0 +1,292 @@
+﻿@page "/inscripciones/list"
+@inject IInscripcionProxy InscripcionProxy
+@inject IJsonProxy JsonProxy
+@inject IToastService ToastService
+@inject IJSRuntime JsRuntime
+@inject HttpClient HttpClient
+@inject IAlumnoProxy AlumnoProxy
+@inject ITallerProxy TallerProxy
+@attribute [Authorize(Roles = Constantes.RolAdministrador)]
+
+<h2 class="text-uppercase mb-5">Listado de Inscritos</h2>
+
+<div class="row">
+    <div class="col">
+        <div class="mb-3">
+            <label for="inscrito" class="form-label">Inscrito</label>
+            <input type="text" class="form-control" id="inscrito" @bind-value="BusquedaRequest.Inscrito"/>
+        </div>
+    </div>
+    <div class="col-3">
+        <label for="taller" class="form-label">Taller</label>
+        <InputText class="form-control" id="taller" @bind-Value="BusquedaRequest.Taller"/>
+    </div>
+    <div class="col-3">
+        <label for="situacion" class="form-label">Situacion</label>
+        <InputSelect id="situacion" class="form-select" @bind-Value="BusquedaRequest.Situacion">
+            <option>Todos</option>
+            @foreach (var item in Situaciones)
+            {
+                <option value="@item.Codigo">@item.Nombre</option>
+            }
+        </InputSelect>
+    </div>
+</div>
+<div class="row">
+    <div class="col-2">
+        <label for="fechaInicio" class="form-label">Fecha de inicio</label>
+        <InputDate class="form-control" id="fechaInicio" @bind-Value="BusquedaRequest.FechaInicio"/>
+    </div>
+    <div class="col-2">
+        <label for="fechaFin" class="form-label">Fecha de fin</label>
+        <InputDate class="form-control" id="fechaFin" @bind-Value="BusquedaRequest.FechaFin"/>
+    </div>
+</div>
+<div class="row mt-3 justify-content-end">
+    <div class="col-auto">
+        <button class="btn btn-outline-primary" @onclick="OnSearch"><i class="bi bi-search me-1"></i>Buscar</button>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-primary" @onclick="OnLimpiar"><i class="bi bi-eraser-fill me-1"></i>Limpiar</button>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-primary" @onclick="CargarTalleres" data-bs-toggle="modal" data-bs-target="#alumnoModal"><i class="bi bi-plus-circle me-1"></i>Inscribir</button>
+    </div>
+</div>
+
+<div class="row mt-4">
+    @if (Inscripciones is null)
+    {
+        <p class="alert alert-info">Sin resultados</p>
+    }
+    else if (!Inscripciones.Any())
+    {
+        <p class="alert alert-danger">Sin datos para mostrar</p>
+    }
+    else
+    {
+        @if (!IsLoading)
+        {
+            <div id="tablaConDatos">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr class="table-primary">
+                        <th class="text-center">#</th>
+                        <th class="text-center">Nombre</th>
+                        <th class="text-center">Taller</th>
+                        <th class="text-center">Inscripción</th>
+                        <th class="text-center">Situacion</th>
+                        @if (!ExportaPdf)
+                        {
+                            <th class="text-center">Acciones</th>
+                        }
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Inscripciones)
+                    {
+                        <tr>
+                            <td class="text-center">@item.Id</td>
+                            <td>@item.Nombre</td>
+                            <td class="text-center">@item.Taller</td>
+                            <td class="text-center">@item.Fecha</td>
+                            <td class="text-center">@item.Situacion</td>
+                            <td class="text-center">
+                                <i class="bi bi-eye"></i>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p>Cargando...</p>
+        }
+    }
+
+</div>
+<div class="row justify-content-end">
+    <div class="col-auto">
+        <button class="btn btn-outline-danger" @onclick="OnExportarPdf"><i class="bi bi-filetype-pdf me-1"></i>Exportar</button>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-success" @onclick="OnExportarExcel"><i class="bi bi-file-excel me-1"></i>Exportar</button>
+    </div>
+</div>
+<DataPager @ref="Paginador" Result="PagedResult" OnPageChanged="PaginaCambiada" OnPageSizeChanged="FilasPorPagina"></DataPager>
+
+<LoadingComponent IsLoading="IsLoading"/>
+
+<div class="modal fade" id="alumnoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h3 class="modal-title fs-5">Inscribir</h3>
+                <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <InscripcionMasivaComponent Alumnos="ListaAlumnos" Talleres="ListaTalleres" BuscarEvent="BuscarAlumnos" InscribirEvent="InscribirMasivo" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    private ICollection<SituacionModel> Situaciones { get; set; } = new List<SituacionModel>();
+
+    private ICollection<InscripcionDtoResponse>? Inscripciones { get; set; }
+
+    public bool IsLoading { get; set; }
+
+    public BusquedaInscripcionRequest BusquedaRequest { get; set; } = new() { Pagina = 1, Filas = 5 };
+
+    public DataPager Paginador { get; set; } = default!;
+
+    public PagedResult<InscripcionDtoResponse> PagedResult { get; set; } = default!;
+
+    private bool ExportaPdf { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Situaciones = await JsonProxy.ListSituaciones();
+
+        PagedResult = new PagedResult<InscripcionDtoResponse>()
+        {
+            CurrentPage = BusquedaRequest.Pagina,
+            RowsPerPage = BusquedaRequest.Filas
+        };
+    }
+
+    private async Task OnSearch()
+    {
+        try
+        {
+            IsLoading = true;
+
+            var response = await InscripcionProxy.ListAsync(BusquedaRequest);
+
+            Inscripciones = response.Data;
+            if (Inscripciones is not null)
+            {
+                PagedResult.Results = Inscripciones;
+                PagedResult.RowCount = Inscripciones.Count;
+                PagedResult.TotalPages = response.TotalPages;
+            }
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private void OnLimpiar()
+    {
+        BusquedaRequest = new() { Pagina = 1, Filas = 5 };
+    }
+
+    private async Task PaginaCambiada()
+    {
+        IsLoading = true;
+        BusquedaRequest.Pagina = PagedResult.CurrentPage;
+        BusquedaRequest.Filas = PagedResult.RowsPerPage;
+
+        await OnSearch();
+    }
+
+    private async Task FilasPorPagina()
+    {
+        BusquedaRequest.Pagina = PagedResult.CurrentPage;
+        BusquedaRequest.Filas = PagedResult.RowsPerPage;
+        await OnSearch();
+    }
+
+    private async Task OnExportarExcel()
+    {
+        if (Inscripciones is null) return;
+
+        try
+        {
+            IsLoading = true;
+
+            var plantilla = await HttpClient.GetStreamAsync("assets/xls/InscritosTemplate.xlsx");
+
+            var excel = new PlantillaXls();
+            var xlsStream = excel.GenerarPlantilla(plantilla, Inscripciones);
+
+            await JsRuntime.InvokeVoidAsync("BlazorDownloadFile", "Inscritos.xlsx", xlsStream);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            ToastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task OnExportarPdf()
+    {
+        if (Inscripciones is null) return;
+
+        try
+        {
+            ExportaPdf = true;
+
+            await using var module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/HtmlToPdf.js");
+
+            var contenidoTabla = await JsRuntime.InvokeAsync<string>("getTableHtml");
+            // Generar y descargar el PDF
+            await module.InvokeVoidAsync("generateAndDownloadPdf", $"<h1>Listado de Inscritos</h1><hr />{contenidoTabla}", "Inscritos.pdf");
+
+            ExportaPdf = false;
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError(ex.Message);
+        }
+    }
+
+    public ICollection<AlumnoSimpleDtoResponse> ListaAlumnos { get; set; } = new List<AlumnoSimpleDtoResponse>();
+    public ICollection<TallerSimpleDtoResponse> ListaTalleres { get; set; } = new List<TallerSimpleDtoResponse>();
+
+    private async Task BuscarAlumnos(Tuple<string, string> tupla)
+    {
+        ListaAlumnos  = await AlumnoProxy.ListarAsync(tupla.Item1, tupla.Item2);
+    }
+
+    private async Task CargarTalleres()
+    {
+        var response = await TallerProxy.ListarAsync();
+        ListaTalleres = response.Data;
+    }
+
+    private async Task InscribirMasivo(InscripcionMasivaDtoRequest request)
+    {
+        try
+        {
+            IsLoading = true;
+            
+            await InscripcionProxy.InscripcionMasivaAsync(request);
+            
+            ToastService.ShowSuccess("Inscripciones realizadas correctamente");
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+}
