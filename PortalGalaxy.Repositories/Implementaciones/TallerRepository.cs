@@ -41,6 +41,10 @@ public class TallerRepository : RepositoryBase<Taller>, ITallerRepository
     public async Task<(ICollection<InscritosPorTallerInfo> Colecction, int Total)> ListAsync(int? instructorId, string? taller, int? situacion, DateTime? fechaInicio, DateTime? fechaFin, int pagina,
         int filas)
     {
+        var inicio = fechaInicio == null ? null : fechaInicio!.Value.ToString("yyyy-MM-dd");
+        var fin = fechaFin == null ? null : fechaFin!.Value.ToString("yyyy-MM-dd");
+        
+
         await using var multipleQuery = await Context.Database.GetDbConnection()
             .QueryMultipleAsync(
                 sql: "uspListarInscripciones", 
@@ -50,8 +54,8 @@ public class TallerRepository : RepositoryBase<Taller>, ITallerRepository
                     instructorId,
                     taller,
                     situacion,
-                    fechaInicio,
-                    fechaFin,
+                    fechaInicio = inicio,
+                    fechaFin = fin,
                     pagina = pagina - 1,
                     filas
                 });
