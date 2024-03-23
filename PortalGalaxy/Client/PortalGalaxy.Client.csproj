@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazor.Bootstrap" Version="2.1.0" />
     <PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
     <PackageReference Include="Blazored.Toast" Version="4.2.0" />
     <PackageReference Include="ClosedXML" Version="0.95.4" />
@@ -26,6 +27,14 @@
   <ItemGroup>
     <Folder Include="Xls\" />
     <Folder Include="wwwroot\assets\xls\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\Reportes\ReporteTalleresPorInstructor.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Reportes\ReporteTalleresPorInstructor.razor" />
   </ItemGroup>
 
 </Project>

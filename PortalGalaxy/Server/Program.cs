@@ -152,6 +152,19 @@ app.UseAuthentication();
 // Autorizacion
 app.UseAuthorization();
 
+var group = app.MapGroup("api/Reportes");
+group.MapGet("tallerespormes/{anio:int}", async (ITallerService reporteService, int anio) =>
+{
+    var response = await reporteService.ReporteTalleresPorMes(anio);
+    return response;
+});
+
+group.MapGet("talleresporinstructor/{anio:int}", async (ITallerService reporteService, int anio) =>
+{
+    var repsonse = await reporteService.ReporteTalleresPorInstructor(anio);
+    return repsonse;
+});
+
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
