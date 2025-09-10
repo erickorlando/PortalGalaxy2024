@@ -18,7 +18,7 @@
     </div>
 </div>
 <div class="row justify-content-between">
-    <BarChart @ref="_barChart" Class="mb-4" />
+    <BarChart @ref="_barChart" Class="mb-4"/>
 </div>
 
 @code {
@@ -51,21 +51,23 @@
 
     private async Task DataInicialAsync()
     {
+        var doubles = Enumerable.Range(0, 12).Select(_ => (double?)0).ToList();
+
         _chartData = new ChartData
-            {
-                Labels = new List<string> { "Instructor 1", "Instructor 2" },
-                Datasets = new List<IChartDataset>()
+        {
+            Labels = new List<string> { "Instructor 1", "Instructor 2" },
+            Datasets = new List<IChartDataset>()
             {
                 new BarChartDataset()
                 {
                     Label = "Instructores",
-                    Data = Enumerable.Range(0, 12).Select(_ => Convert.ToDouble(0)).ToList(),
+                    Data = doubles,
                     BackgroundColor = new List<string> { "#515f84" },
                     CategoryPercentage = 0.9,
                     BarPercentage = 1
                 }
             }
-            };
+        };
 
         _chartOptions = new BarChartOptions();
 
@@ -86,7 +88,9 @@
                 var data = response.Data;
 
                 var labels = data.Select(x => x.Instructor).ToList();
-                var datos = data.Select(x => Convert.ToDouble(x.Cantidad)).ToList();
+                var datos = data
+                    .Select(x => (double?)x.Cantidad)
+                    .ToList();
 
                 _chartData.Labels?.Clear();
                 _chartData.Labels?.AddRange(labels);
@@ -113,4 +117,5 @@
             await CargaDatos(int.Parse(e.Value.ToString() ?? DateTime.Now.Year.ToString()));
         }
     }
+
 }

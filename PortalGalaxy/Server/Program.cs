@@ -13,8 +13,11 @@ using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
 using System.Text;
 using QuestPDF.Infrastructure;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+const string corsConfiguration = "PortalGalaxy";
 
 // Configuracion de Logs
 var logger = new LoggerConfiguration()
@@ -49,6 +52,17 @@ QuestPDF.Settings.License = LicenseType.Community;
 builder.Services.Configure<AppSettings>(builder.Configuration);
 
 // Add services to the container.
+
+builder.Services.AddCors(policy =>
+{
+    policy.AddPolicy(corsConfiguration, config =>
+    {
+        config
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -151,6 +165,8 @@ app.UseRouting();
 app.UseAuthentication();
 // Autorizacion
 app.UseAuthorization();
+
+app.UseCors(corsConfiguration);
 
 var group = app.MapGroup("api/Reportes");
 group.MapGet("tallerespormes/{anio:int}", async (ITallerService reporteService, int anio) =>

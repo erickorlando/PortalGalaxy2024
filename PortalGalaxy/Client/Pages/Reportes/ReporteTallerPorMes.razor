@@ -58,7 +58,7 @@
                 new BarChartDataset()
                 {
                     Label = "Instructores",
-                    Data = Enumerable.Range(0, 3).Select(_ => Convert.ToDouble(0)).ToList(),
+                    Data = Enumerable.Range(0, 3).Select(_ => (double?)0).ToList(),
                     BackgroundColor = new List<string> { "#515f84" },
                     CategoryPercentage = 0.9,
                     BarPercentage = 1
@@ -90,7 +90,7 @@
                 var data = response.Data;
 
                 var labels = data.Select(x => x.Mes).ToList();
-                var datos = data.Select(x => Convert.ToDouble(x.Cantidad)).ToList();
+                var datos = data.Select(x => (double?)x.Cantidad).ToList();
 
                 _chartData.Labels?.Clear();
                 _chartData.Labels?.AddRange(labels);
